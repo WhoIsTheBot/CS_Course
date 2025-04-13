@@ -1,162 +1,64 @@
 using System;
-using System.Diagnostics;
 
 class Program
 {
     static void Main()
     {
-        // Створення об'єкта Student
-        Student student = new Student
-        {
-            Person = new Person("Alice", "Smith", new DateTime(1999, 5, 15)),
-            Education = Education.Master,
-            GroupNumber = 202
-        };
-        Console.WriteLine(student.ToShortString());
+        // Перевірка рівності Person
+        Person p1 = new Person("Alice", "Smith", new DateTime(2000, 1, 1));
+        Person p2 = new Person("Alice", "Smith", new DateTime(2000, 1, 1));
+        Console.WriteLine($"p1 == p2: {p1 == p2}"); // True
+        Console.WriteLine($"Hash codes: {p1.GetHashCode()}, {p2.GetHashCode()}");
 
-        // Виведення значень індексатора
-        Console.WriteLine($"Is Master: {student[Education.Master]}");
-        Console.WriteLine($"Is Bachelor: {student[Education.Bachelor]}");
-        Console.WriteLine($"Is SecondEducation: {student[Education.SecondEducation]}");
-        // Присвоєння значень властивостям
-        student.AddExams(new Exam("Physics", 4, new DateTime(2023, 6, 10)), new Exam("Chemistry", 5, new DateTime(2023, 6, 12)));
+ 
+        Student student = new Student(
+                new Person("Alice", "Smith", new DateTime(2000, 1, 1)),
+                Education.Master,
+                202
+            );
+        student.AddExams(
+            new Exam("Physics", 4, new DateTime(2023, 6, 10)),
+            new Exam("Chemistry", 5, new DateTime(2023, 6, 12))
+        );
 
-        Console.WriteLine(student.ToString());
+        student.AddTests(
+            new Test("Physics", true),
+            new Test("Mathematics", false),
+            new Test("Chemistry", true)
+        );
 
-        // Запрошення до вводу з обробкою помилок
-        Console.WriteLine("Введіть кількість рядків та стовпців у форматі: 2000, 2000");
-        string input = Console.ReadLine() ?? string.Empty;
-        char[] separators = { ' ', ',', ';', ':' };
-        string[] parts = input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-        // Перевірка коректності вводу
-        if (parts.Length != 2)
-        {
-            Console.WriteLine("Невірний формат вводу!");
-            return;
-        }
+        Console.WriteLine(student.ToString()); 
+        Console.WriteLine($"Average grade: {student.AverageGrade}");
 
-        int nRows, nColumns;
+        Console.WriteLine($"Person property of student: {student.Person}");
+
+        Student copy = (Student)student.DeepCopy();
+        Console.WriteLine($"Original group: {student.GroupNumber}, Copy group: {copy.GroupNumber}");
+
         try
         {
-            nRows = int.Parse(parts[0]);
-            nColumns = int.Parse(parts[1]);
+            Student invalidStudent = new Student { GroupNumber = 50 }; 
         }
-        catch (FormatException)
+        catch (ArgumentOutOfRangeException ex)
         {
-            Console.WriteLine("Введено нечислові значення!");
-            return;
+            Console.WriteLine($"Помилка: {ex.Message}");
         }
 
-        // Перевірка на переповнення
-        long totalElements = (long)nRows * nColumns;
-        if (totalElements > int.MaxValue)
-        {
-            Console.WriteLine("Занадто великий розмір масиву!");
-            return;
-        }
+        Console.WriteLine("\nІспити з оцінкою > 3:");
+        foreach (Exam exam in student.GetExamsAbove(3))
+            Console.WriteLine(exam);
 
-        // Ініціалізація масивів
-        Exam[] oneDimensionalArray = new Exam[totalElements];
-        Exam[,] twoDimensionalRectangularArray = new Exam[nRows, nColumns];
-        Exam[][] twoDimensionalJaggedArray = new Exam[nRows][];
-        Exam[][] twoDimensionalJaggedArrayVariable = new Exam[nRows][];
+        Console.WriteLine("Спільні предмети:");
+        foreach (string subject in student)
+            Console.WriteLine(subject);
 
-        // Ініціалізація масивів
-        for (int i = 0; i < totalElements; i++)
-        {
-            oneDimensionalArray[i] = new Exam();
-        }
+        Console.WriteLine("\nЗдані заліки та іспити:");
+        foreach (object item in student.GetAllPassedItems())
+            Console.WriteLine(item);
 
-        for (int i = 0; i < nRows; i++)
-        {
-            twoDimensionalJaggedArray[i] = new Exam[nColumns];
-            twoDimensionalJaggedArrayVariable[i] = new Exam[i + 1]; // Ініціалізація кожного рядка з різною кількістю елементів
-
-            for (int j = 0; j < nColumns; j++)
-            {
-                twoDimensionalRectangularArray[i, j] = new Exam();
-                twoDimensionalJaggedArray[i][j] = new Exam();
-            }
-
-            for (int j = 0; j < twoDimensionalJaggedArrayVariable[i].Length; j++)
-            {
-                twoDimensionalJaggedArrayVariable[i][j] = new Exam();
-            }
-        }
-
-        // Вимірювання часу для одновимірного масиву
-        int startTime = Environment.TickCount;
-        for (int i = 0; i < totalElements; i++)
-        {
-            oneDimensionalArray[i]._grade = 5;
-        }
-        int endTime = Environment.TickCount;
-        Console.WriteLine($"Час виконання для одновимірного масиву: {endTime - startTime} ms");
-
-        // Вимірювання часу для двовимірного прямокутного масиву
-        startTime = Environment.TickCount;
-        for (int i = 0; i < nRows; i++)
-        {
-            for (int j = 0; j < nColumns; j++)
-            {
-                twoDimensionalRectangularArray[i, j]._grade = 5;
-            }
-        }
-        endTime = Environment.TickCount;
-        Console.WriteLine($"Час виконання для двовимірного прямокутного масиву: {endTime - startTime} ms");
-
-        // Вимірювання часу для двовимірного зубчастого масиву з однаковою кількістю елементів
-        startTime = Environment.TickCount;
-        for (int i = 0; i < nRows; i++)
-        {
-            for (int j = 0; j < nColumns; j++)
-            {
-                twoDimensionalJaggedArray[i][j]._grade = 5;
-            }
-        }
-        endTime = Environment.TickCount;
-        Console.WriteLine($"Час виконання для двовимірного зубчастого масиву (однакова кількість елементів): {endTime - startTime} ms");
-
-        // Ініціалізація зубчастого масиву з різною кількістю елементів
-        twoDimensionalJaggedArrayVariable = new Exam[nRows][];
-        int[] elementsPerRow = new int[nRows];
-
-        // Базовий розподіл: перші N-1 рядків мають по nColumns елементів
-        for (int i = 0; i < nRows - 1; i++)
-        {
-            elementsPerRow[i] = nColumns;
-        }
-
-        // Останній рядок отримує решту елементів
-        elementsPerRow[nRows - 1] = (int)totalElements - (nColumns * (nRows - 1));
-
-        // Перевірка коректності
-        if (elementsPerRow[nRows - 1] < 0)
-        {
-            Console.WriteLine("Неможливий розподіл елементів!");
-            return;
-        }
-
-        // Ініціалізація масиву
-        for (int i = 0; i < nRows; i++)
-        {
-            twoDimensionalJaggedArrayVariable[i] = new Exam[elementsPerRow[i]];
-            for (int j = 0; j < elementsPerRow[i]; j++)
-            {
-                twoDimensionalJaggedArrayVariable[i][j] = new Exam();
-            }
-        }
-
-        startTime = Environment.TickCount;
-        for (int i = 0; i < nRows; i++)
-        {
-            for (int j = 0; j < twoDimensionalJaggedArrayVariable[i].Length; j++)
-            {
-                twoDimensionalJaggedArrayVariable[i][j]._grade = 5;
-            }
-        }
-        endTime = Environment.TickCount;
-        Console.WriteLine($"Час для зубчастого масиву (різна кількість): {endTime - startTime} ms");
+        Console.WriteLine("\nЗаліки зі зданими іспитами:");
+        foreach (Test test in student.GetPassedTestsWithExams())
+            Console.WriteLine(test);
     }
 }

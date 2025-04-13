@@ -1,55 +1,50 @@
 using System;
 
-public class Person
+public class Person : IDateAndCopy
 {
-    private string _firstName;
-    private string _lastName;
-    private DateTime _birthDate;
+    protected string _firstName;
+    protected string _lastName;
+    protected DateTime _birthDate;
 
     public Person(string FirstName, string LastName, DateTime BirthDate)
     {
-        this._firstName = FirstName;
-        this._lastName = LastName;
-        this._birthDate = BirthDate;
+        _firstName = FirstName;
+        _lastName = LastName;
+        _birthDate = BirthDate;
+        Date = DateTime.Now;
     }
 
     public Person() : this("John", "Doe", new DateTime(2000, 1, 1)){}
 
-    // Властивість для доступу до поля з іменем
-    public string FirstName
+    public string FirstName => _firstName;
+    public string LastName => _lastName;
+    public DateTime BirthDate => _birthDate;
+    public DateTime Date { get; init; }
+
+    public override bool Equals(object? obj)
     {
-        get => _firstName;
-        init => _firstName = value;
+        if (obj is Person other)
+            return _firstName == other._firstName &&
+                   _lastName == other._lastName &&
+                   _birthDate == other._birthDate;
+        return false;
     }
 
-    // Властивість для доступу до поля з прізвищем
-    public string LastName
-    {
-        get => _lastName;
-        init => _lastName = value;
-    }
+    public static bool operator ==(Person a, Person b) => a.Equals(b);
+    public static bool operator !=(Person a, Person b) => !a.Equals(b);
 
-    // Властивість для доступу до поля з датою народження
-    public DateTime BirthDate
-    {
-        get => _birthDate;
-        init => _birthDate = value;
-    }
+    public override int GetHashCode() =>
+        HashCode.Combine(_firstName, _lastName, _birthDate);
 
-    // Властивість для отримання та зміни року народження
-    public int BirthYear
-    {
-        get => _birthDate.Year;
-        set => _birthDate = new DateTime(value, _birthDate.Month, _birthDate.Day);
-    }
+    public virtual object DeepCopy() =>
+        new Person(_firstName, _lastName, _birthDate);
 
     public override string ToString()
     {
         return $"{_firstName} {_lastName}, Born: {_birthDate.ToShortDateString()}";
     }
 
-
-    public string ToShortString()
+    public virtual  string ToShortString()
     {
         return $"{_firstName} {_lastName}";
     }
