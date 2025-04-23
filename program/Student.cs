@@ -8,22 +8,21 @@ public class Student
     private int _groupNumber;
     private Exam[] _exams;
 
-    public Student(Person Person, Education Education, int GroupNumber, Exam[] Exams)
+    public Student(Person person, Education education, int groupNumber, Exam[] exams)
     {
-        this._person = Person;
-        this._education = Education;
-        this._groupNumber = GroupNumber;
-        this._exams = Exams;
+        _person = person;
+        _education = education;
+        _groupNumber = groupNumber;
+        _exams = exams;
     }
 
-    public Student():this(new Person(), Education.Bachelor, 101, Array.Empty<Exam>()) { }
-
+    public Student() : this(new Person(), Education.Bachelor, 101, Array.Empty<Exam>()) { }
 
     public Person Person
-    {        get { return _person; }
+    {
+        get { return _person; }
         init { _person = value; }
     }
-    
 
     public Education Education
     {
@@ -48,7 +47,7 @@ public class Student
         get
         {
             if (_exams.Length == 0) return 0;
-            return _exams.Average(e => e._grade);
+            return _exams.Average(e => e.Grade);
         }
     }
 

@@ -2,21 +2,39 @@ using System;
 
 public class Exam
 {
-    public string _subject { get; set; } 
-    public int _grade { get; set; }
-    public DateTime _examDate { get; set; }
+    private string _subject;
+    private int _grade;
+    private DateTime _examDate;
 
-    public Exam(string Subject, int Grade, DateTime ExamDate)
+    public Exam(string subject, int grade, DateTime examDate)
     {
-        this._subject = Subject;
-        this._grade = Grade;
-        this._examDate = ExamDate;
+        _subject = subject;
+        _grade = grade;
+        _examDate = examDate;
     }
 
     public Exam() : this("Math", 5, new DateTime(2023, 6, 15)) { }
 
+    public string Subject
+    {
+        get => _subject;
+        set => _subject = value;
+    }
+
+    public int Grade
+    {
+        get => _grade;
+        set => _grade = value;
+    }
+
+    public DateTime ExamDate
+    {
+        get => _examDate;
+        set => _examDate = value;
+    }
+
     public override string ToString()
     {
-        return $"{_subject}, Grade: {_grade}, Date: {_examDate.ToShortDateString()}";
+        return $"{Subject}, Grade: {Grade}, Date: {ExamDate.ToShortDateString()}";
     }
 }

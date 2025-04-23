@@ -5,7 +5,6 @@ class Program
 {
     static void Main()
     {
-        // Створення об'єкта Student
         Student student = new Student
         {
             Person = new Person("Alice", "Smith", new DateTime(1999, 5, 15)),
@@ -14,22 +13,23 @@ class Program
         };
         Console.WriteLine(student.ToShortString());
 
-        // Виведення значень індексатора
         Console.WriteLine($"Is Master: {student[Education.Master]}");
         Console.WriteLine($"Is Bachelor: {student[Education.Bachelor]}");
         Console.WriteLine($"Is SecondEducation: {student[Education.SecondEducation]}");
-        // Присвоєння значень властивостям
-        student.AddExams(new Exam("Physics", 4, new DateTime(2023, 6, 10)), new Exam("Chemistry", 5, new DateTime(2023, 6, 12)));
+
+        student.AddExams(
+            new Exam("Physics", 4, new DateTime(2023, 6, 10)),
+            new Exam("Chemistry", 5, new DateTime(2023, 6, 12))
+        );
 
         Console.WriteLine(student.ToString());
+        Console.WriteLine(student.ToShortString());
 
-        // Запрошення до вводу з обробкою помилок
         Console.WriteLine("Введіть кількість рядків та стовпців у форматі: 2000, 2000");
         string input = Console.ReadLine() ?? string.Empty;
         char[] separators = { ' ', ',', ';', ':' };
         string[] parts = input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-        // Перевірка коректності вводу
         if (parts.Length != 2)
         {
             Console.WriteLine("Невірний формат вводу!");
@@ -48,7 +48,6 @@ class Program
             return;
         }
 
-        // Перевірка на переповнення
         long totalElements = (long)nRows * nColumns;
         if (totalElements > int.MaxValue)
         {
@@ -56,13 +55,11 @@ class Program
             return;
         }
 
-        // Ініціалізація масивів
         Exam[] oneDimensionalArray = new Exam[totalElements];
         Exam[,] twoDimensionalRectangularArray = new Exam[nRows, nColumns];
         Exam[][] twoDimensionalJaggedArray = new Exam[nRows][];
         Exam[][] twoDimensionalJaggedArrayVariable = new Exam[nRows][];
 
-        // Ініціалізація масивів
         for (int i = 0; i < totalElements; i++)
         {
             oneDimensionalArray[i] = new Exam();
@@ -71,7 +68,7 @@ class Program
         for (int i = 0; i < nRows; i++)
         {
             twoDimensionalJaggedArray[i] = new Exam[nColumns];
-            twoDimensionalJaggedArrayVariable[i] = new Exam[i + 1]; // Ініціалізація кожного рядка з різною кількістю елементів
+            twoDimensionalJaggedArrayVariable[i] = new Exam[i + 1];
 
             for (int j = 0; j < nColumns; j++)
             {
@@ -85,78 +82,72 @@ class Program
             }
         }
 
-        // Вимірювання часу для одновимірного масиву
+        // Одновимірний масив
         int startTime = Environment.TickCount;
         for (int i = 0; i < totalElements; i++)
         {
-            oneDimensionalArray[i]._grade = 5;
+            oneDimensionalArray[i].Grade = 5;
         }
         int endTime = Environment.TickCount;
         Console.WriteLine($"Час виконання для одновимірного масиву: {endTime - startTime} ms");
 
-        // Вимірювання часу для двовимірного прямокутного масиву
+        // Двовимірний прямокутний масив
         startTime = Environment.TickCount;
         for (int i = 0; i < nRows; i++)
         {
             for (int j = 0; j < nColumns; j++)
             {
-                twoDimensionalRectangularArray[i, j]._grade = 5;
+                twoDimensionalRectangularArray[i, j].Grade = 5;
             }
         }
         endTime = Environment.TickCount;
         Console.WriteLine($"Час виконання для двовимірного прямокутного масиву: {endTime - startTime} ms");
 
-        // Вимірювання часу для двовимірного зубчастого масиву з однаковою кількістю елементів
+        // Зубчастий масив з однаковою кількістю елементів
         startTime = Environment.TickCount;
         for (int i = 0; i < nRows; i++)
         {
             for (int j = 0; j < nColumns; j++)
             {
-                twoDimensionalJaggedArray[i][j]._grade = 5;
+                twoDimensionalJaggedArray[i][j].Grade = 5;
             }
         }
         endTime = Environment.TickCount;
         Console.WriteLine($"Час виконання для двовимірного зубчастого масиву (однакова кількість елементів): {endTime - startTime} ms");
 
-        // Ініціалізація зубчастого масиву з різною кількістю елементів
         twoDimensionalJaggedArrayVariable = new Exam[nRows][];
-        int[] elementsPerRow = new int[nRows];
+        int[] rowSizes = new int[nRows];
 
-        // Базовий розподіл: перші N-1 рядків мають по nColumns елементів
-        for (int i = 0; i < nRows - 1; i++)
-        {
-            elementsPerRow[i] = nColumns;
-        }
+        // Спочатку рівномірно по totalElements
+        int baseSize = (int)(totalElements / nRows);
+        int remainder = (int)(totalElements % nRows);
 
-        // Останній рядок отримує решту елементів
-        elementsPerRow[nRows - 1] = (int)totalElements - (nColumns * (nRows - 1));
-
-        // Перевірка коректності
-        if (elementsPerRow[nRows - 1] < 0)
-        {
-            Console.WriteLine("Неможливий розподіл елементів!");
-            return;
-        }
-
-        // Ініціалізація масиву
+        // Розподіл кількості елементів
         for (int i = 0; i < nRows; i++)
         {
-            twoDimensionalJaggedArrayVariable[i] = new Exam[elementsPerRow[i]];
-            for (int j = 0; j < elementsPerRow[i]; j++)
+            rowSizes[i] = baseSize + (i < remainder ? 1 : 0);
+        }
+
+        // Ініціалізація масиву та об'єктів
+        for (int i = 0; i < nRows; i++)
+        {
+            twoDimensionalJaggedArrayVariable[i] = new Exam[rowSizes[i]];
+            for (int j = 0; j < rowSizes[i]; j++)
             {
                 twoDimensionalJaggedArrayVariable[i][j] = new Exam();
             }
         }
 
+        // Вимір часу заповнення .Grade
         startTime = Environment.TickCount;
         for (int i = 0; i < nRows; i++)
         {
             for (int j = 0; j < twoDimensionalJaggedArrayVariable[i].Length; j++)
             {
-                twoDimensionalJaggedArrayVariable[i][j]._grade = 5;
+                twoDimensionalJaggedArrayVariable[i][j].Grade = 5;
             }
         }
         endTime = Environment.TickCount;
-        Console.WriteLine($"Час для зубчастого масиву (різна кількість): {endTime - startTime} ms");
+        Console.WriteLine($"Час виконання для зубчастого масиву (рівномірний розподіл): {endTime - startTime} ms");
     }
 }
