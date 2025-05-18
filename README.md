@@ -1,166 +1,80 @@
 # Козловський Василь — 301-А група  
-## Лабораторна робота №4
+## Лабораторна робота №5
 ### Варіант 1
 
 ---
 
 ## Опис завдання
 
- - Використовуючи завдання лабораторної роботи №3 використати відповідні Immutable (ImmutableList ImmutableDictionary) та Sorted (SortedList, Sorted Dictionary) колекції для реалізації завдання попередньої лабораторної роботи та зробити порівняння виконання часу Standard vs Immutable vs Sorted.
+Реалізувати типізовану колекцію `StudentCollection`, яка генерує події при зміні елементів, а також вести журнал змін через клас `Journal`.  
+Передбачено обробку подій `StudentCountChanged` та `StudentReferenceChanged`, делегати, обробники та журнал подій.
 
 ---
 
 ## Основні можливості
 
-- MeasureSearchTime() – виконує пошук чотирьох типів ключів (перший, середній, останній, відсутній) у відповідних колекціях і вимірює час виконання операцій Contains/ContainsKey.
-- Measure(string label, Func<bool> func) – замір часу однієї операції за допомогою Stopwatch.
+- Додавання та видалення об'єктів типу `Student` у колекції `StudentCollection`.
+- Генерація подій:
+  - `StudentCountChanged` — при додаванні або видаленні студентів.
+  - `StudentReferenceChanged` — при зміні посилань на об'єкти.
+- Клас `Journal` для реєстрації подій, які відбулись із колекціями.
+- Підтримка декількох підписок на події однієї або різних колекцій.
+- Вивід записів журналу в зручному форматі.
 
 ---
-
-## Ініціалізація колекцій у TestImmutableCollections
-
-```csharp
-var personListBuilder = ImmutableList.CreateBuilder<Person>();
-var stringListBuilder = ImmutableList.CreateBuilder<string>();
-var personDictBuilder = ImmutableDictionary.CreateBuilder<Person, Student>();
-var stringDictBuilder = ImmutableDictionary.CreateBuilder<string, Student>();
-
-for (int i = 0; i < count; i++)
-{
-    var student = TestCollections.GenerateStudent(i);
-    var person = new Person(student.FirstName, student.LastName, student.BirthDate);
-    var keyString = person.ToString();
-
-    personListBuilder.Add(person);
-    stringListBuilder.Add(keyString);
-    personDictBuilder.Add(person, student);
-    stringDictBuilder.Add(keyString, student);
-}
-
-personImmutableList = personListBuilder.ToImmutable();
-stringImmutableList = stringListBuilder.ToImmutable();
-personStudentImmutableDict = personDictBuilder.ToImmutable();
-stringStudentImmutableDict = stringDictBuilder.ToImmutable();
-
-```
-
-## Метод для вимірювання часу пошуку в колекціях
-
-```csharp
-private void Measure(string label, Func<bool> func)
-{
-    Stopwatch sw = Stopwatch.StartNew();
-    bool result = func();
-    sw.Stop();
-    Console.WriteLine($"{label}: {result}, час: {sw.ElapsedTicks} ticks");
-}
-
-```
-
-## Виклик пошуку в MeasureSearchTime
-
-```csharp
-var keys = new[] { first, middle, last, missing };
-foreach (var key in keys)
-{
-    string keyStr = key.ToString();
-
-    Console.WriteLine($"\n Пошук в Immutable колекціях: {keyStr}");
-
-    Measure("ImmutableList<Person>.Contains", () => personImmutableList.Contains(key));
-    Measure("ImmutableList<string>.Contains", () => stringImmutableList.Contains(keyStr));
-    Measure("ImmutableDictionary<Person, Student>.ContainsKey", () => personStudentImmutableDict.ContainsKey(key));
-    Measure("ImmutableDictionary<string, Student>.ContainsKey", () => stringStudentImmutableDict.ContainsKey(keyStr));
-}
-
-```
 
 ## Результат виконання коду
 
 ```text
+Journal 1 (only collection1 events):
+[Collection 1] Student added: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student added: Petro Petrov, 15.05.1999, Master, Group: 202, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student removed: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student reference changed: New Student, 03.03.2001, Bachelor, Group: 303, Avg: 0,00, Tests: 0, Exams: 0
 
-=== Перевірка TestCollections ===
+Journal 2 (all events):
+[Collection 1] Student added: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student added: Petro Petrov, 15.05.1999, Master, Group: 202, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 2] Default student added: Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Anna Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
+[Collection 2] Default student added: Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
+Journal 1 (only collection1 events):
+[Collection 1] Student added: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student added: Petro Petrov, 15.05.1999, Master, Group: 202, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student removed: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student reference changed: New Student, 03.03.2001, Bachelor, Group: 303, Avg: 0,00, Tests: 0, Exams: 0
 
-=== Стандартні колекції ===
+Journal 2 (all events):
+[Collection 1] Student added: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student added: Petro Petrov, 15.05.1999, Master, Group: 202, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 2] Default student added: Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Anna Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3      
+[Collection 2] Default student added: Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
+[Collection 2] Default student added: Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 1] Student reference changed: New Student, 03.03.2001, Bachelor, Group: 303, Avg: 0,00, Tests: 0, Exams: 0
 
- Пошук: Name0 Surname0, 01.01.2000
-List<Person>.Contains: True, час: 715 ticks
-List<string>.Contains: True, час: 869 ticks
-Dictionary<Person, Student>.ContainsKey: True, час: 586 ticks
-Dictionary<string, Student>.ContainsKey: True, час: 508 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 2623 ticks
-
- Пошук: Name5000 Surname5000, 09.09.2013
-List<Person>.Contains: True, час: 469 ticks
-List<string>.Contains: True, час: 875 ticks
-Dictionary<Person, Student>.ContainsKey: True, час: 13 ticks
-Dictionary<string, Student>.ContainsKey: True, час: 192 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 1011 ticks
-
- Пошук: Name9999 Surname9999, 18.05.2027
-List<Person>.Contains: True, час: 1048 ticks
-List<string>.Contains: True, час: 1999 ticks
-Dictionary<Person, Student>.ContainsKey: True, час: 7 ticks
-Dictionary<string, Student>.ContainsKey: True, час: 6 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 586 ticks
-
- Пошук: Not Exists, 01.01.0001
-List<Person>.Contains: False, час: 501 ticks
-List<string>.Contains: False, час: 796 ticks
-Dictionary<Person, Student>.ContainsKey: False, час: 9 ticks
-Dictionary<string, Student>.ContainsKey: False, час: 8 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 517 ticks
-
-=== Immutable колекції ===
-
- Пошук в Immutable колекціях: Name0 Surname0, 01.01.2000
-ImmutableList<Person>.Contains: True, час: 1677 ticks
-ImmutableList<string>.Contains: True, час: 1411 ticks
-ImmutableDictionary<Person, Student>.ContainsKey: True, час: 1144 ticks
-ImmutableDictionary<string, Student>.ContainsKey: True, час: 994 ticks
-
- Пошук в Immutable колекціях: Name5000 Surname5000, 09.09.2013
-ImmutableList<Person>.Contains: True, час: 5286 ticks
-ImmutableList<string>.Contains: True, час: 5926 ticks
-ImmutableDictionary<Person, Student>.ContainsKey: True, час: 49 ticks
-ImmutableDictionary<string, Student>.ContainsKey: True, час: 45 ticks
-
- Пошук в Immutable колекціях: Name9999 Surname9999, 18.05.2027
-ImmutableList<Person>.Contains: True, час: 10167 ticks
-ImmutableList<string>.Contains: True, час: 15201 ticks
-ImmutableDictionary<Person, Student>.ContainsKey: True, час: 156 ticks
-ImmutableDictionary<string, Student>.ContainsKey: True, час: 98 ticks
-
- Пошук в Immutable колекціях: Not Exists, 01.01.0001
-ImmutableList<Person>.Contains: False, час: 9919 ticks
-ImmutableList<string>.Contains: False, час: 17341 ticks
-ImmutableDictionary<Person, Student>.ContainsKey: False, час: 104 ticks
-ImmutableDictionary<string, Student>.ContainsKey: False, час: 72 ticks
-
-=== Sorted колекції ===
-
- Пошук в Sorted колекціях: Name0 Surname0, 01.01.2000
-SortedList<Person, Student>.ContainsKey: True, час: 646 ticks
-SortedList<string, Student>.ContainsKey: True, час: 808 ticks
-SortedDictionary<Person, Student>.ContainsKey: True, час: 2407 ticks
-SortedDictionary<string, Student>.ContainsKey: True, час: 623 ticks
-
- Пошук в Sorted колекціях: Name5499 Surname5499, 21.01.2015
-SortedList<Person, Student>.ContainsKey: True, час: 49 ticks
-SortedList<string, Student>.ContainsKey: True, час: 58 ticks
-SortedDictionary<Person, Student>.ContainsKey: True, час: 58 ticks
-SortedDictionary<string, Student>.ContainsKey: True, час: 61 ticks
-
- Пошук в Sorted колекціях: Name9999 Surname9999, 18.05.2027
-SortedList<Person, Student>.ContainsKey: True, час: 44 ticks
-SortedList<string, Student>.ContainsKey: True, час: 50 ticks
-SortedDictionary<Person, Student>.ContainsKey: True, час: 59 ticks
-SortedDictionary<string, Student>.ContainsKey: True, час: 111 ticks
-
- Пошук в Sorted колекціях: Not Exists, 01.01.0001
-SortedList<Person, Student>.ContainsKey: False, час: 22 ticks
-SortedList<string, Student>.ContainsKey: False, час: 17 ticks
-SortedDictionary<Person, Student>.ContainsKey: False, час: 22 ticks
-SortedDictionary<string, Student>.ContainsKey: False, час: 23 ticks
-
+Journal 2 (all events):
+[Collection 1] Student added: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 1] Student added: Petro Petrov, 15.05.1999, Master, Group: 202, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 2] Default student added: Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Anna Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3      
+[Collection 2] Default student added: Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
+[Collection 2] Default student added: Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Anna Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3      
+[Collection 2] Default student added: Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
+[Collection 2] Default student added: Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
+[Collection 2] Default student added: Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 1] Student removed: Ivan Ivanov, 01.01.2000, Bachelor, Group: 101, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 2] Student removed: Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
+[Collection 1] Student reference changed: New Student, 03.03.2001, Bachelor, Group: 303, Avg: 0,00, Tests: 0, Exams: 0
+[Collection 2] Student reference changed: Another One, 04.04.2002, SecondEducation, Group: 404, Avg: 0,00, Tests: 0, Exams: 0  
 ``` 
