@@ -57,7 +57,7 @@ public class TestCollections
         {
             string keyStr = key.ToString();
 
-            Console.WriteLine($"\n🔍 Пошук: {keyStr}");
+            Console.WriteLine($"\n Пошук: {keyStr}");
 
             Measure("List<Person>.Contains", () => personList.Contains(key));
             Measure("List<string>.Contains", () => stringList.Contains(keyStr));
