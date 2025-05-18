@@ -17,6 +17,33 @@
 
 ---
 
+## Основні можливості
+
+```csharp
+var personListBuilder = ImmutableList.CreateBuilder<Person>();
+var stringListBuilder = ImmutableList.CreateBuilder<string>();
+var personDictBuilder = ImmutableDictionary.CreateBuilder<Person, Student>();
+var stringDictBuilder = ImmutableDictionary.CreateBuilder<string, Student>();
+
+for (int i = 0; i < count; i++)
+{
+    var student = TestCollections.GenerateStudent(i);
+    var person = new Person(student.FirstName, student.LastName, student.BirthDate);
+    var keyString = person.ToString();
+
+    personListBuilder.Add(person);
+    stringListBuilder.Add(keyString);
+    personDictBuilder.Add(person, student);
+    stringDictBuilder.Add(keyString, student);
+}
+
+personImmutableList = personListBuilder.ToImmutable();
+stringImmutableList = stringListBuilder.ToImmutable();
+personStudentImmutableDict = personDictBuilder.ToImmutable();
+stringStudentImmutableDict = stringDictBuilder.ToImmutable();
+
+```
+
 ## Результат виконання коду
 
 ```text
