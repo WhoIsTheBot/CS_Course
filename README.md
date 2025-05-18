@@ -1,128 +1,108 @@
 # Козловський Василь — 301-А група  
-## Лабораторна робота №3  
-### Варіант 1  
+## Лабораторна робота №4
+### Варіант 1
 
-
+---
 
 ## Опис завдання
 
-У цій лабораторній роботі реалізовано порівняння ефективності пошуку в різних типах колекцій C#. Основною метою є:
+ - Використовуючи завдання лабораторної роботи №3 використати відповідні Immutable (ImmutableList ImmutableDictionary) та Sorted (SortedList, Sorted Dictionary) колекції для реалізації завдання попередньої лабораторної роботи та зробити порівняння виконання часу Standard vs Immutable vs Sorted.
 
-- створення узагальненого класу `TestCollections`, який містить
-- використання класів `Person` як ключів (TKey) і `Student` як значень (TValue), де `Student` містить поле з типом `Person`
-- реалізація інтерфейсів `IComparable`, `IComparer<Person>`, `IComparer<Student>`
-- вимірювання часу пошуку в колекціях: перший, центральний, останній і неіснуючий елемент
-
-## Структура проєкту
-
-- **Person.cs** — базовий клас з полями, методами та реалізацією порівняння по прізвищу і даті народження
-- **Student.cs** — клас-нащадок, який містить списки заліків (`List<Test>`) і екзаменів (`List<Exam>`), а також середній бал
-- **StudentCollection.cs** — клас для роботи зі списком студентів та їх сортуванням/фільтрацією
-- **TestCollections.cs** — основний клас лабораторної для створення, заповнення та вимірювання часу пошуку в колекціях
-- **Exam.cs** — клас іспиту, який реалізує IDateAndCopy
-- **Main.cs** — клас заліку, аналогічний до Exam
-- **StudentEnumerator.cs** — ітератор для спільних предметів, який реалізує IEnumerator<string> та знаходить предмети, які є і в заліках, і в іспитах
-- **IDateAndCopy.cs** — інтерфейс для об'єктів з датою та копіюванням
-- **StudentComparer.cs** — компаратор для сортування за середнім балом
-- **Main.cs** — точка входу, де демонструється робота всіх методів та класів
 ---
 
 ## Основні можливості
 
-- Сортування студентів:
-  - За прізвищем (`IComparable`)
-  - За датою народження (`IComparer<Person>`)
-  - За середнім балом (`IComparer<Student>`)
-- Операції над колекцією студентів:
-  - Отримання студентів з формою навчання Master
-  - Групування за середнім балом
-  - Знаходження максимального середнього балу
-- Генерація `TestCollections` із заданою кількістю елементів
-- Вимірювання часу пошуку в:
-  - `List<Person>`
-  - `List<string>`
-  - `Dictionary<Person, Student>` (по ключу і по значенню)
-  - `Dictionary<string, Student>`
+- MeasureSearchTime() – виконує пошук чотирьох типів ключів (перший, середній, останній, відсутній) у відповідних колекціях і вимірює час виконання операцій Contains/ContainsKey.
+- Measure(string label, Func<bool> func) – замір часу однієї операції за допомогою Stopwatch.
 
 ---
 
+## Результат виконання коду
+
 ```text
-
-## Приклад виводу
-
---- Початковий список студентів ---
-Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
-Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
-Alga Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3
-Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
-Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
-Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
-Nadiia Bondar, 22.04.2002, SecondEducation, Group: 308, Avg: 5,00, Tests: 3, Exams: 3
-
---- Сортування за прізвищем ---
-Nadiia Bondar, 22.04.2002, SecondEducation, Group: 308, Avg: 5,00, Tests: 3, Exams: 3
-Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
-Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
-Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
-Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
-Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
-Alga Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3
-
---- Сортування за датою народження ---
-Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
-Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
-Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
-Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
-Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
-Alga Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3
-Nadiia Bondar, 22.04.2002, SecondEducation, Group: 308, Avg: 5,00, Tests: 3, Exams: 3
-
---- Сортування за середнім балом ---
-Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
-Andriy Melnyk, 05.06.2000, Bachelor, Group: 115, Avg: 3,00, Tests: 3, Exams: 3
-Dmytro Koval, 15.12.1999, Bachelor, Group: 140, Avg: 4,00, Tests: 3, Exams: 3
-Ivan Ivanov, 20.05.2001, Bachelor, Group: 101, Avg: 4,00, Tests: 3, Exams: 3
-Alga Shevchenko, 30.01.2002, SecondEducation, Group: 315, Avg: 4,00, Tests: 3, Exams: 3
-Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
-Nadiia Bondar, 22.04.2002, SecondEducation, Group: 308, Avg: 5,00, Tests: 3, Exams: 3
-
-Макс. середній бал: 5,00
-
---- Магістри ---
-Petro Petrov, 10.03.2000, Master, Group: 205, Avg: 3,00, Tests: 3, Exams: 3
-Yulia Savchuk, 25.09.2001, Master, Group: 220, Avg: 4,67, Tests: 3, Exams: 3
-
---- Група зі середнім балом = 5 ---
-Nadiia Bondar, 22.04.2002, SecondEducation, Group: 308, Avg: 5,00, Tests: 3, Exams: 3
 
 === Перевірка TestCollections ===
 
+=== Стандартні колекції ===
+
  Пошук: Name0 Surname0, 01.01.2000
-List<Person>.Contains: True, час: 3008 ticks
-List<string>.Contains: True, час: 2963 ticks
-Dictionary<Person, Student>.ContainsKey: True, час: 3036 ticks
-Dictionary<string, Student>.ContainsKey: True, час: 2945 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 10890 ticks
+List<Person>.Contains: True, час: 715 ticks
+List<string>.Contains: True, час: 869 ticks
+Dictionary<Person, Student>.ContainsKey: True, час: 586 ticks
+Dictionary<string, Student>.ContainsKey: True, час: 508 ticks
+Dictionary<Person, Student>.ContainsValue: False, час: 2623 ticks
 
  Пошук: Name5000 Surname5000, 09.09.2013
-List<Person>.Contains: True, час: 2257 ticks
-List<string>.Contains: True, час: 4192 ticks
-Dictionary<Person, Student>.ContainsKey: True, час: 75 ticks
-Dictionary<string, Student>.ContainsKey: True, час: 599 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 7984 ticks
+List<Person>.Contains: True, час: 469 ticks
+List<string>.Contains: True, час: 875 ticks
+Dictionary<Person, Student>.ContainsKey: True, час: 13 ticks
+Dictionary<string, Student>.ContainsKey: True, час: 192 ticks
+Dictionary<Person, Student>.ContainsValue: False, час: 1011 ticks
 
  Пошук: Name9999 Surname9999, 18.05.2027
-List<Person>.Contains: True, час: 3705 ticks
-List<string>.Contains: True, час: 7055 ticks
-Dictionary<Person, Student>.ContainsKey: True, час: 67 ticks
-Dictionary<string, Student>.ContainsKey: True, час: 62 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 3598 ticks
+List<Person>.Contains: True, час: 1048 ticks
+List<string>.Contains: True, час: 1999 ticks
+Dictionary<Person, Student>.ContainsKey: True, час: 7 ticks
+Dictionary<string, Student>.ContainsKey: True, час: 6 ticks
+Dictionary<Person, Student>.ContainsValue: False, час: 586 ticks
 
  Пошук: Not Exists, 01.01.0001
-List<Person>.Contains: False, час: 3626 ticks
-List<string>.Contains: False, час: 6364 ticks
-Dictionary<Person, Student>.ContainsKey: False, час: 72 ticks
-Dictionary<string, Student>.ContainsKey: False, час: 53 ticks
-Dictionary<Person, Student>.ContainsValue: False, час: 5346 ticks
+List<Person>.Contains: False, час: 501 ticks
+List<string>.Contains: False, час: 796 ticks
+Dictionary<Person, Student>.ContainsKey: False, час: 9 ticks
+Dictionary<string, Student>.ContainsKey: False, час: 8 ticks
+Dictionary<Person, Student>.ContainsValue: False, час: 517 ticks
+
+=== Immutable колекції ===
+
+ Пошук в Immutable колекціях: Name0 Surname0, 01.01.2000
+ImmutableList<Person>.Contains: True, час: 1677 ticks
+ImmutableList<string>.Contains: True, час: 1411 ticks
+ImmutableDictionary<Person, Student>.ContainsKey: True, час: 1144 ticks
+ImmutableDictionary<string, Student>.ContainsKey: True, час: 994 ticks
+
+ Пошук в Immutable колекціях: Name5000 Surname5000, 09.09.2013
+ImmutableList<Person>.Contains: True, час: 5286 ticks
+ImmutableList<string>.Contains: True, час: 5926 ticks
+ImmutableDictionary<Person, Student>.ContainsKey: True, час: 49 ticks
+ImmutableDictionary<string, Student>.ContainsKey: True, час: 45 ticks
+
+ Пошук в Immutable колекціях: Name9999 Surname9999, 18.05.2027
+ImmutableList<Person>.Contains: True, час: 10167 ticks
+ImmutableList<string>.Contains: True, час: 15201 ticks
+ImmutableDictionary<Person, Student>.ContainsKey: True, час: 156 ticks
+ImmutableDictionary<string, Student>.ContainsKey: True, час: 98 ticks
+
+ Пошук в Immutable колекціях: Not Exists, 01.01.0001
+ImmutableList<Person>.Contains: False, час: 9919 ticks
+ImmutableList<string>.Contains: False, час: 17341 ticks
+ImmutableDictionary<Person, Student>.ContainsKey: False, час: 104 ticks
+ImmutableDictionary<string, Student>.ContainsKey: False, час: 72 ticks
+
+=== Sorted колекції ===
+
+ Пошук в Sorted колекціях: Name0 Surname0, 01.01.2000
+SortedList<Person, Student>.ContainsKey: True, час: 646 ticks
+SortedList<string, Student>.ContainsKey: True, час: 808 ticks
+SortedDictionary<Person, Student>.ContainsKey: True, час: 2407 ticks
+SortedDictionary<string, Student>.ContainsKey: True, час: 623 ticks
+
+ Пошук в Sorted колекціях: Name5499 Surname5499, 21.01.2015
+SortedList<Person, Student>.ContainsKey: True, час: 49 ticks
+SortedList<string, Student>.ContainsKey: True, час: 58 ticks
+SortedDictionary<Person, Student>.ContainsKey: True, час: 58 ticks
+SortedDictionary<string, Student>.ContainsKey: True, час: 61 ticks
+
+ Пошук в Sorted колекціях: Name9999 Surname9999, 18.05.2027
+SortedList<Person, Student>.ContainsKey: True, час: 44 ticks
+SortedList<string, Student>.ContainsKey: True, час: 50 ticks
+SortedDictionary<Person, Student>.ContainsKey: True, час: 59 ticks
+SortedDictionary<string, Student>.ContainsKey: True, час: 111 ticks
+
+ Пошук в Sorted колекціях: Not Exists, 01.01.0001
+SortedList<Person, Student>.ContainsKey: False, час: 22 ticks
+SortedList<string, Student>.ContainsKey: False, час: 17 ticks
+SortedDictionary<Person, Student>.ContainsKey: False, час: 22 ticks
+SortedDictionary<string, Student>.ContainsKey: False, час: 23 ticks
 
 ``` 
