@@ -17,7 +17,7 @@
 
 ---
 
-## Основні можливості
+## Ініціалізація колекцій у TestImmutableCollections
 
 ```csharp
 var personListBuilder = ImmutableList.CreateBuilder<Person>();
@@ -41,6 +41,37 @@ personImmutableList = personListBuilder.ToImmutable();
 stringImmutableList = stringListBuilder.ToImmutable();
 personStudentImmutableDict = personDictBuilder.ToImmutable();
 stringStudentImmutableDict = stringDictBuilder.ToImmutable();
+
+```
+
+## Метод для вимірювання часу пошуку в колекціях
+
+```csharp
+private void Measure(string label, Func<bool> func)
+{
+    Stopwatch sw = Stopwatch.StartNew();
+    bool result = func();
+    sw.Stop();
+    Console.WriteLine($"{label}: {result}, час: {sw.ElapsedTicks} ticks");
+}
+
+```
+
+## Виклик пошуку в MeasureSearchTime
+
+```csharp
+var keys = new[] { first, middle, last, missing };
+foreach (var key in keys)
+{
+    string keyStr = key.ToString();
+
+    Console.WriteLine($"\n Пошук в Immutable колекціях: {keyStr}");
+
+    Measure("ImmutableList<Person>.Contains", () => personImmutableList.Contains(key));
+    Measure("ImmutableList<string>.Contains", () => stringImmutableList.Contains(keyStr));
+    Measure("ImmutableDictionary<Person, Student>.ContainsKey", () => personStudentImmutableDict.ContainsKey(key));
+    Measure("ImmutableDictionary<string, Student>.ContainsKey", () => stringStudentImmutableDict.ContainsKey(keyStr));
+}
 
 ```
 
