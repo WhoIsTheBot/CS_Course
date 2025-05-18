@@ -52,6 +52,8 @@
 
 ---
 
+```text
+
 ## Приклад виводу
 
 --- Початковий список студентів ---
@@ -128,3 +130,5 @@ List<string>.Contains: False, час: 6364 ticks
 Dictionary<Person, Student>.ContainsKey: False, час: 72 ticks
 Dictionary<string, Student>.ContainsKey: False, час: 53 ticks
 Dictionary<Person, Student>.ContainsValue: False, час: 5346 ticks
+
+``` 
