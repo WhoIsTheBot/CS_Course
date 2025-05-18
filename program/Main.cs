@@ -2,50 +2,37 @@ class Program
 {
     static void Main()
     {
-        var students = new StudentCollection();
-        // students.AddDefaults();
-        // Console.WriteLine("\n--- Початковий список студентів ---");
-        // Console.WriteLine(students.ToShortString());
+        var collection1 = new StudentCollection { CollectionName = "Collection 1" };
+        var collection2 = new StudentCollection { CollectionName = "Collection 2" };
 
-        // students.SortByLastName();
-        // Console.WriteLine("\n--- Сортування за прізвищем ---");
-        // Console.WriteLine(students.ToShortString());
+        var journal1 = new Journal();
+        var journal2 = new Journal();
 
-        // students.SortByBirthDate();
-        // Console.WriteLine("\n--- Сортування за датою народження ---");
-        // Console.WriteLine(students.ToShortString());
+        collection1.StudentCountChanged += journal1.StudentCollectionChanged;
+        collection1.StudentReferenceChanged += journal1.StudentCollectionChanged;
 
-        // students.SortByAverageMark();
-        // Console.WriteLine("\n--- Сортування за середнім балом ---");
-        // Console.WriteLine(students.ToShortString());
+        collection1.StudentCountChanged += journal2.StudentCollectionChanged;
+        collection1.StudentReferenceChanged += journal2.StudentCollectionChanged;
+        collection2.StudentCountChanged += journal2.StudentCollectionChanged;
+        collection2.StudentReferenceChanged += journal2.StudentCollectionChanged;
 
-        // Console.WriteLine($"\nМакс. середній бал: {students.MaxAverageMark:F2}");
+        collection1.AddStudents(
+            new Student(new Person("Ivan", "Ivanov", new DateTime(2000, 1, 1)), Education.Bachelor, 101),
+            new Student(new Person("Petro", "Petrov", new DateTime(1999, 5, 15)), Education.Master, 202)
+        );
 
-        // Console.WriteLine("\n--- Магістри ---");
-        // foreach (var s in students.MasterStudents)
-        //     Console.WriteLine(s.ToShortString());
+        collection2.AddDefaults();
 
-        // Console.WriteLine("\n--- Група зі середнім балом = 5 ---");
-        // foreach (var s in students.AverageMarkGroup(5.0))
-        //     Console.WriteLine(s.ToShortString());
+        collection1.Remove(0);
+        collection2.Remove(1);
 
-        
+        collection1[0] = new Student(new Person("New", "Student", new DateTime(2001, 3, 3)), Education.Bachelor, 303);
+        collection2[0] = new Student(new Person("Another", "One", new DateTime(2002, 4, 4)), Education.SecondEducation, 404);
 
+        Console.WriteLine("Journal 1 (only collection1 events):");
+        Console.WriteLine(journal1);
 
-        // TestCollections
-        Console.WriteLine("\n=== Перевірка TestCollections ===");
-        int collectionSize = 10000;
-        
-        Console.WriteLine("\n=== Стандартні колекції ===");
-        var testCol = new TestCollections(collectionSize);
-        testCol.MeasureSearchTime();
-        
-        Console.WriteLine("\n=== Immutable колекції ===");
-        var testImmutableCol = new TestImmutableCollections(collectionSize);
-        testImmutableCol.MeasureSearchTime();
-        
-        Console.WriteLine("\n=== Sorted колекції ===");
-        var testSortedCol = new TestSortedCollections(collectionSize);
-        testSortedCol.MeasureSearchTime();
+        Console.WriteLine("\nJournal 2 (all events):");
+        Console.WriteLine(journal2);
     }
 }

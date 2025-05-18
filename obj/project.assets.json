@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR4\\My2.csproj",
+      "projectUniqueName": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR5\\My2.csproj",
       "projectName": "My2",
-      "projectPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR4\\My2.csproj",
+      "projectPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR5\\My2.csproj",
       "packagesPath": "C:\\Users\\G_I\\.nuget\\packages\\",
-      "outputPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR4\\obj\\",
+      "outputPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR5\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\G_I\\AppData\\Roaming\\NuGet\\NuGet.Config"
