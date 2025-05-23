@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR6\\My2.csproj": {}
+    "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR8\\My2.csproj": {}
   },
   "projects": {
-    "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR6\\My2.csproj": {
+    "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR8\\My2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR6\\My2.csproj",
+        "projectUniqueName": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR8\\My2.csproj",
         "projectName": "My2",
-        "projectPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR6\\My2.csproj",
+        "projectPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR8\\My2.csproj",
         "packagesPath": "C:\\Users\\G_I\\.nuget\\packages\\",
-        "outputPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR6\\obj\\",
+        "outputPath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR8\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\G_I\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -42,6 +42,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "System.Threading.Tasks.Dataflow": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
