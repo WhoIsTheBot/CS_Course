@@ -2,37 +2,46 @@ class Program
 {
     static void Main()
     {
-        var collection1 = new StudentCollection { CollectionName = "Collection 1" };
-        var collection2 = new StudentCollection { CollectionName = "Collection 2" };
 
-        var journal1 = new Journal();
-        var journal2 = new Journal();
+        Console.WriteLine("\n=== Перевірка методів збереження/копіювання ===");
 
-        collection1.StudentCountChanged += journal1.StudentCollectionChanged;
-        collection1.StudentReferenceChanged += journal1.StudentCollectionChanged;
+        var s = new Student();
+        if (s.AddFromConsole())
+        {
+            Console.WriteLine("Введений іспит успішно додано:");
 
-        collection1.StudentCountChanged += journal2.StudentCollectionChanged;
-        collection1.StudentReferenceChanged += journal2.StudentCollectionChanged;
-        collection2.StudentCountChanged += journal2.StudentCollectionChanged;
-        collection2.StudentReferenceChanged += journal2.StudentCollectionChanged;
+            Console.WriteLine(s);
+        }
+        else
+        {
+            Console.WriteLine("Помилка при введенні іспиту");
+        }
 
-        collection1.AddStudents(
-            new Student(new Person("Ivan", "Ivanov", new DateTime(2000, 1, 1)), Education.Bachelor, 101),
-            new Student(new Person("Petro", "Petrov", new DateTime(1999, 5, 15)), Education.Master, 202)
-        );
+        s.Save("student.json");
 
-        collection2.AddDefaults();
+        var s2 = new Student();
+        if (s2.Load("student.json"))
+        {
+            Console.WriteLine("Успішно завантажено з файлу:");
 
-        collection1.Remove(0);
-        collection2.Remove(1);
 
-        collection1[0] = new Student(new Person("New", "Student", new DateTime(2001, 3, 3)), Education.Bachelor, 303);
-        collection2[0] = new Student(new Person("Another", "One", new DateTime(2002, 4, 4)), Education.SecondEducation, 404);
+            Console.WriteLine(s2.ToShortString());
+        }
+        else
+        {
+            Console.WriteLine("Не вдалося завантажити з файлу.");
+        }
 
-        Console.WriteLine("Journal 1 (only collection1 events):");
-        Console.WriteLine(journal1);
+        var copy = s.DeepCopy();
+        Console.WriteLine("Копія студента:");
+        Console.WriteLine(copy);
 
-        Console.WriteLine("\nJournal 2 (all events):");
-        Console.WriteLine(journal2);
+        Student.Save("static_student.json", s);
+
+        var s3 = new Student();
+        Student.Load("static_student.json", s3);
+        Console.WriteLine("Завантажено через static Load:");
+        Console.WriteLine(s3);
+
     }
 }
