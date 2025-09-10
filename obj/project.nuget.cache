@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ZT4c9B04FOY=",
+  "dgSpecHash": "SkL0PycGW+k=",
   "success": true,
-  "projectFilePath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR6\\My2.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "D:\\TheCode\\Programming\\.NET\\University_Code_Lab\\LR8\\My2.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\G_I\\.nuget\\packages\\system.threading.tasks.dataflow\\9.0.5\\system.threading.tasks.dataflow.9.0.5.nupkg.sha512"
+  ],
   "logs": []
 }
