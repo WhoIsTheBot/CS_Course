@@ -1,64 +1,36 @@
-using System;
-
 class Program
 {
     static void Main()
     {
-        // Перевірка рівності Person
-        Person p1 = new Person("Alice", "Smith", new DateTime(2000, 1, 1));
-        Person p2 = new Person("Alice", "Smith", new DateTime(2000, 1, 1));
-        Console.WriteLine($"p1 == p2: {p1 == p2}"); // True
-        Console.WriteLine($"Hash codes: {p1.GetHashCode()}, {p2.GetHashCode()}");
+        var students = new StudentCollection();
+        students.AddDefaults();
+        Console.WriteLine("\n--- Початковий список студентів ---");
+        Console.WriteLine(students.ToShortString());
 
- 
-        Student student = new Student(
-                new Person("Alice", "Smith", new DateTime(2000, 1, 1)),
-                Education.Master,
-                202
-            );
-        student.AddExams(
-            new Exam("Physics", 4, new DateTime(2023, 6, 10)),
-            new Exam("Chemistry", 5, new DateTime(2023, 6, 12))
-        );
+        students.SortByLastName();
+        Console.WriteLine("\n--- Сортування за прізвищем ---");
+        Console.WriteLine(students.ToShortString());
 
-        student.AddTests(
-            new Test("Physics", true),
-            new Test("Mathematics", false),
-            new Test("Chemistry", true)
-        );
+        students.SortByBirthDate();
+        Console.WriteLine("\n--- Сортування за датою народження ---");
+        Console.WriteLine(students.ToShortString());
 
+        students.SortByAverageMark();
+        Console.WriteLine("\n--- Сортування за середнім балом ---");
+        Console.WriteLine(students.ToShortString());
 
-        Console.WriteLine(student.ToString()); 
-        Console.WriteLine($"Average grade: {student.AverageGrade}");
+        Console.WriteLine($"\nМакс. середній бал: {students.MaxAverageMark:F2}");
 
-        Console.WriteLine($"Person property of student: {student.Person}");
+        Console.WriteLine("\n--- Магістри ---");
+        foreach (var s in students.MasterStudents)
+            Console.WriteLine(s.ToShortString());
 
-        Student copy = (Student)student.DeepCopy();
-        Console.WriteLine($"Original group: {student.GroupNumber}, Copy group: {copy.GroupNumber}");
+        Console.WriteLine("\n--- Група зі середнім балом = 5 ---");
+        foreach (var s in students.AverageMarkGroup(5.0))
+            Console.WriteLine(s.ToShortString());
 
-        try
-        {
-            Student invalidStudent = new Student { GroupNumber = 50 }; 
-        }
-        catch (ArgumentOutOfRangeException ex)
-        {
-            Console.WriteLine($"Помилка: {ex.Message}");
-        }
-
-        Console.WriteLine("\nІспити з оцінкою > 3:");
-        foreach (Exam exam in student.GetExamsAbove(3))
-            Console.WriteLine(exam);
-
-        Console.WriteLine("Спільні предмети:");
-        foreach (string subject in student)
-            Console.WriteLine(subject);
-
-        Console.WriteLine("\nЗдані заліки та іспити:");
-        foreach (object item in student.GetAllPassedItems())
-            Console.WriteLine(item);
-
-        Console.WriteLine("\nЗаліки зі зданими іспитами:");
-        foreach (Test test in student.GetPassedTestsWithExams())
-            Console.WriteLine(test);
+        Console.WriteLine("\n=== Перевірка TestCollections ===");
+        var testCol = new TestCollections(10000);  // можеш змінити розмір
+        testCol.MeasureSearchTime();
     }
 }
